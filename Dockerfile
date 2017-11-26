@@ -4,7 +4,8 @@ FROM ubuntu:xenial
 RUN \
   apt-get update -y && \
 	apt-get install -y python-dev python-pip && \
-	pip install awscli --upgrade --user
+	pip install awscli --upgrade --user && \
+  apt-get purge -y python-dev && apt autoremove -y && apt autoclean -y
 
 # Define path for pip
 ENV PATH=${PATH}:/root/.local/bin
@@ -17,7 +18,8 @@ RUN \
   apt-get update && \
   apt-get install -y oracle-java8-installer && \
   rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
+  rm -rf /var/cache/oracle-jdk8-installer && \
+  apt-get purge -y software-properties-common python-software-properties && apt autoremove -y && apt autoclean -y
 
 # Define commonly used JAVA_HOME variable
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
