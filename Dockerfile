@@ -1,5 +1,7 @@
 FROM ubuntu:xenial
 
+WORKDIR /root
+
 # Install AWS CLI
 RUN \
   apt-get update -y && \
@@ -23,3 +25,27 @@ RUN \
 
 # Define commonly used JAVA_HOME variable
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+
+# Install Maven
+RUN \
+  wget http://xenia.sote.hu/ftp/mirrors/www.apache.org/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz && \
+  tar -xzvf apache-maven-3.5.2-bin.tar.gz -C /opt && \
+  rm -rf apache-maven-3.5.2-bin.tar.gz
+
+ENV M2_HOME=/opt/apache-maven-3.5.2
+ENV PATH=${PATH}:$M2_HOME/bin
+
+# Install Git
+RUN \
+  apt-get update && apt-get install -y git && \
+  rm -rf /var/lib/apt/lists/*
+
+# Install Docker
+RUN \
+  apt-get update && apt-get install -y curl lsb-release software-properties-common apt-transport-https && \
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+  add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+  apt-get update && \
+  apt-get install -y docker-ce && \
+  rm -rf /var/lib/apt/lists/* && \
+  apt-get purge -y curl lsb-release software-properties-common apt-transport-https && apt autoremove -y && apt autoclean -y
